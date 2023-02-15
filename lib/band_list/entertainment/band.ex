@@ -4,6 +4,7 @@ defmodule BandList.Entertainment.Band do
 
   schema "bands" do
     field :name, :string
+    field :likes, :integer, default: 0
 
     timestamps()
   end
@@ -11,8 +12,8 @@ defmodule BandList.Entertainment.Band do
   @doc false
   def changeset(band, attrs) do
     band
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :likes])
+    |> validate_required([:name, :likes])
     |> validate_length(:name, min: 2, max: 30)
   end
 end
