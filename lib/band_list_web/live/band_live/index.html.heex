@@ -1,0 +1,32 @@
+<h1>Listing Bands</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.band_index_path(@socket, :index)}>
+    <.live_component
+      module={BandListWeb.BandLive.FormComponent}
+      id={@band.id || :new}
+      title={@page_title}
+      action={@live_action}
+      band={@band}
+      return_to={Routes.band_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<div id="bands">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="bands">
+      <%= for band <- @bands do %>
+        <%= live_component BandListWeb.BandLive.BandComponent, id: band.id, band: band %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<span><%= live_patch "New Band", to: Routes.band_index_path(@socket, :new) %></span>

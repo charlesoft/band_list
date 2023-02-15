@@ -1,0 +1,26 @@
+<h1>Show Band</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.band_show_path(@socket, :show, @band)}>
+    <.live_component
+      module={BandListWeb.BandLive.FormComponent}
+      id={@band.id}
+      title={@page_title}
+      action={@live_action}
+      band={@band}
+      return_to={Routes.band_show_path(@socket, :show, @band)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @band.name %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.band_show_path(@socket, :edit, @band), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.band_index_path(@socket, :index) %></span>
