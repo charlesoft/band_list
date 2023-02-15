@@ -18,7 +18,11 @@ defmodule BandList.Entertainment do
 
   """
   def list_bands do
-    Repo.all(Band)
+    query = from b in Band
+
+    query
+    |> order_by([b], desc: b.name)
+    |> Repo.all()
   end
 
   @doc """
