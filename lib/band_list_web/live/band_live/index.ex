@@ -8,7 +8,7 @@ defmodule BandListWeb.BandLive.Index do
   def mount(_params, _session, socket) do
     if connected?(socket), do: Entertainment.subscribe()
 
-    {:ok, assign(socket, :bands, list_bands())}
+    {:ok, assign(socket, :bands, list_bands()), temporary_assigns: [bands: []]}
   end
 
   @impl true
@@ -36,6 +36,14 @@ defmodule BandListWeb.BandLive.Index do
 
   @impl true
   def handle_info({:band_created, band}, socket) do
+    updated_reply(socket, band)
+  end
+
+  def handle_info({:band_updated, band}, socket) do
+    updated_reply(socket, band)
+  end
+
+  defp updated_reply(socket, band) do
     {:noreply, update(socket, :bands, fn bands -> [band | bands] end)}
   end
 

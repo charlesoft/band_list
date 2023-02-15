@@ -112,6 +112,18 @@ defmodule BandList.Entertainment do
     Phoenix.PubSub.subscribe(BandList.PubSub, "bands")
   end
 
+  def inc_likes(%Band{id: id}) do
+    query = from b in Band
+
+    {1, [band]} =
+      query
+      |> where([b], b.id == ^id)
+      |> select([b], b)
+      |> Repo.update_all(inc: [likes: 1])
+
+    broadcast({:ok, band}, :band_updated)
+  end
+
   defp broadcast({:error, error}, _event), do: error
   defp broadcast({:ok, band}, event) do
     Phoenix.PubSub.broadcast(BandList.PubSub, "bands", {event, band})

@@ -18,10 +18,10 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th></th>
+        <th>Likes</th>
       </tr>
     </thead>
-    <tbody id="bands">
+    <tbody id="bands" phx-update="prepend">
       <%= for band <- @bands do %>
         <%= live_component BandListWeb.BandLive.BandComponent, id: band.id, band: band %>
       <% end %>

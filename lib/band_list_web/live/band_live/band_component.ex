@@ -5,6 +5,10 @@ defmodule BandListWeb.BandLive.BandComponent do
     ~H"""
       <tr id={'band-#{@band.id}'}>
         <td><%= @band.name %></td>
+        <td><a href="#" phx-click="like" phx-target={@myself}>
+            <%=@band.likes %>
+          </a>
+        </td>
 
         <td>
           <span><%= live_redirect "Show", to: Routes.band_show_path(@socket, :show, @band) %></span>
@@ -13,5 +17,11 @@ defmodule BandListWeb.BandLive.BandComponent do
         </td>
       </tr>
     """
+  end
+
+  def handle_event("like", _params, socket) do
+    BandList.Entertainment.inc_likes(socket.assigns.band)
+
+    {:noreply, socket}
   end
 end
