@@ -25,6 +25,15 @@ defmodule BandList.Entertainment do
     |> Repo.all()
   end
 
+  def list_members(band_id) do
+    query = from m in Member
+
+    query
+    |> where([m], m.band_id == ^band_id)
+    |> order_by([m], desc: m.name)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single band.
 
