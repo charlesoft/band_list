@@ -24,6 +24,8 @@ defmodule BandListWeb.Router do
     live "/bands/:id", BandLive.Show, :show
     live "/bands/:id/show/edit", BandLive.Show, :edit
 
+    live "/bands/:band_id/members", MemberLive.Index, :index
+
     get "/", PageController, :index
   end
 
