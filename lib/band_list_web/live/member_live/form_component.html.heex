@@ -1,0 +1,32 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="member-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save">
+
+    <%= label f, :name %>
+    <%= text_input f, :name %>
+
+    <%= label f, :bio %>
+    <%= text_input f, :bio %>
+
+    <%= label f, :start_date %>
+    <%= datetime_local_input f, :start_date %>
+
+    <%= label f, :end_date %>
+    <%= datetime_local_input f, :end_date %>
+
+    <%= error_tag f, :name %>
+
+    <%= hidden_input f, :band_id, value: @band_id %>
+
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
+</div>
