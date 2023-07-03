@@ -6,7 +6,7 @@ defmodule BandListWeb.BandLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    if connected?(socket), do: Entertainment.subscribe()
+    if connected?(socket), do: Entertainment.subscribe("bands")
 
     {:ok, assign(socket, :bands, list_bands()), temporary_assigns: [bands: []]}
   end
