@@ -1,4 +1,4 @@
-defmodule BandList.Enterteinment.Member do
+defmodule BandList.Entertainment.Member do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -18,7 +18,7 @@ defmodule BandList.Enterteinment.Member do
   @doc false
   def changeset(member, attrs \\ %{}) do
     member
-    |> cast(attrs, [:name, :bio, :start_date, :end_date])
+    |> cast(attrs, [:name, :bio, :start_date, :end_date, :band_id])
     |> validate_required([:name, :bio, :start_date, :band_id])
   end
 end
