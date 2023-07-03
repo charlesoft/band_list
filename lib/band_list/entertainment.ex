@@ -6,7 +6,7 @@ defmodule BandList.Entertainment do
   import Ecto.Query, warn: false
   alias BandList.Repo
 
-  alias BandList.Entertainment.Band
+  alias BandList.Entertainment.{Band, Member}
 
   @doc """
   Returns the list of bands.
@@ -18,7 +18,7 @@ defmodule BandList.Entertainment do
 
   """
   def list_bands do
-    query = from b in Band
+    query = from(b in Band)
 
     query
     |> order_by([b], desc: b.name)
@@ -26,7 +26,7 @@ defmodule BandList.Entertainment do
   end
 
   def list_members(band_id) do
-    query = from m in Member
+    query = from(m in Member)
 
     query
     |> where([m], m.band_id == ^band_id)
@@ -50,6 +50,14 @@ defmodule BandList.Entertainment do
   """
   def get_band!(id), do: Repo.get!(Band, id)
 
+  def get_member!(band_id, id) do
+    query = from(m in Member)
+
+    query
+    |> where([m], m.id == ^id and m.band_id == ^band_id)
+    |> Repo.one!()
+  end
+
   @doc """
   Creates a band.
 
@@ -66,7 +74,14 @@ defmodule BandList.Entertainment do
     %Band{}
     |> Band.changeset(attrs)
     |> Repo.insert()
-    |> broadcast(:band_created)
+    |> broadcast(:band_created, "bands")
+  end
+
+  def create_member(attrs) do
+    %Member{}
+    |> Member.changeset(attrs)
+    |> Repo.insert()
+    |> broadcast(:member_created, "members")
   end
 
   @doc """
@@ -85,7 +100,7 @@ defmodule BandList.Entertainment do
     band
     |> Band.changeset(attrs)
     |> Repo.update()
-    |> broadcast(:band_updated)
+    |> broadcast(:band_updated, "bands")
   end
 
   @doc """
@@ -104,6 +119,10 @@ defmodule BandList.Entertainment do
     Repo.delete(band)
   end
 
+  def delete_member(member) do
+    Repo.delete(member)
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking band changes.
 
@@ -117,12 +136,16 @@ defmodule BandList.Entertainment do
     Band.changeset(band, attrs)
   end
 
-  def subscribe do
-    Phoenix.PubSub.subscribe(BandList.PubSub, "bands")
+  def change_member(%Member{} = member, attrs \\ %{}) do
+    Member.changeset(member, attrs)
+  end
+
+  def subscribe(data) do
+    Phoenix.PubSub.subscribe(BandList.PubSub, data)
   end
 
   def inc_likes(%Band{id: id}) do
-    query = from b in Band
+    query = from(b in Band)
 
     {1, [band]} =
       query
@@ -134,9 +157,10 @@ defmodule BandList.Entertainment do
   end
 
   defp broadcast({:error, error}, _event), do: error
-  defp broadcast({:ok, band}, event) do
-    Phoenix.PubSub.broadcast(BandList.PubSub, "bands", {event, band})
 
-    {:ok, band}
+  defp broadcast({:ok, data}, event, name) do
+    Phoenix.PubSub.broadcast(BandList.PubSub, name, {event, data})
+
+    {:ok, data}
   end
 end
