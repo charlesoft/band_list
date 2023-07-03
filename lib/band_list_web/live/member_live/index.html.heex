@@ -1,2 +1,35 @@
 <h1>Listing Members</h1>
 
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.member_index_path(@socket, :index, @band_id)}>
+    <.live_component
+      module={BandListWeb.MemberLive.FormComponent}
+      id={@member.id || :new}
+      title={@page_title}
+      action={@live_action}
+      member={@member}
+      band_id={@band_id}
+      return_to={Routes.band_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+  <div id="Members">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Bio</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+        </tr>
+      </thead>
+      <tbody id="members" phx-update="prepend">
+        <%= for member <- @members do %>
+          <%= live_component BandListWeb.MemberLive.MemberComponent, id: member.id, member: member %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+<span><%= live_patch "New Member", to: Routes.member_index_path(@socket, :new, @band_id) %></span>
